@@ -1,6 +1,6 @@
 import type { SchemaType as ISchemaType } from "@dojoengine/sdk";
 
-import { BigNumberish } from 'starknet';
+import { BigNumberish } from "starknet";
 
 // Type definition for `wordle::models::Attempt` struct
 export interface Attempt {
@@ -34,12 +34,12 @@ export interface GameValue {
 
 export interface SchemaType extends ISchemaType {
 	wordle: {
-		Attempt: Attempt,
-		Config: Config,
-		ConfigValue: ConfigValue,
-		Game: Game,
-		GameValue: GameValue,
-	},
+		Attempt: Attempt;
+		Config: Config;
+		ConfigValue: ConfigValue;
+		Game: Game;
+		GameValue: GameValue;
+	};
 }
 export const schema: SchemaType = {
 	wordle: {
@@ -58,17 +58,17 @@ export const schema: SchemaType = {
 		},
 		Game: {
 			player: "",
-			attempts: [{ word: 0, hint: 0, }],
+			attempts: [{ word: 0, hint: 0 }],
 		},
 		GameValue: {
-			attempts: [{ word: 0, hint: 0, }],
+			attempts: [{ word: 0, hint: 0 }],
 		},
 	},
 };
 export enum ModelsMapping {
-	Attempt = 'wordle-Attempt',
-	Config = 'wordle-Config',
-	ConfigValue = 'wordle-ConfigValue',
-	Game = 'wordle-Game',
-	GameValue = 'wordle-GameValue',
+	Attempt = "wordle-Attempt",
+	Config = "wordle-Config",
+	ConfigValue = "wordle-ConfigValue",
+	Game = "wordle-Game",
+	GameValue = "wordle-GameValue",
 }

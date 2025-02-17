@@ -1,9 +1,15 @@
 import { DojoProvider, DojoCall } from "@dojoengine/core";
-import { Account, AccountInterface, BigNumberish, CairoOption, CairoCustomEnum, ByteArray } from "starknet";
+import {
+	Account,
+	AccountInterface,
+	BigNumberish,
+	CairoOption,
+	CairoCustomEnum,
+	ByteArray,
+} from "starknet";
 import * as models from "./models.gen";
 
 export function setupWorld(provider: DojoProvider) {
-
 	const build_actions_attempt_calldata = (word: BigNumberish): DojoCall => {
 		return {
 			contractName: "actions",
@@ -12,7 +18,10 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const actions_attempt = async (snAccount: Account | AccountInterface, word: BigNumberish) => {
+	const actions_attempt = async (
+		snAccount: Account | AccountInterface,
+		word: BigNumberish,
+	) => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -25,7 +34,9 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_vrf_provider_mock_consumeRandom_calldata = (source: CairoCustomEnum): DojoCall => {
+	const build_vrf_provider_mock_consumeRandom_calldata = (
+		source: CairoCustomEnum,
+	): DojoCall => {
 		return {
 			contractName: "vrf_provider_mock",
 			entrypoint: "consume_random",
@@ -33,7 +44,10 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const vrf_provider_mock_consumeRandom = async (snAccount: Account | AccountInterface, source: CairoCustomEnum) => {
+	const vrf_provider_mock_consumeRandom = async (
+		snAccount: Account | AccountInterface,
+		source: CairoCustomEnum,
+	) => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -46,7 +60,10 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_vrf_provider_mock_requestRandom_calldata = (caller: string, source: CairoCustomEnum): DojoCall => {
+	const build_vrf_provider_mock_requestRandom_calldata = (
+		caller: string,
+		source: CairoCustomEnum,
+	): DojoCall => {
 		return {
 			contractName: "vrf_provider_mock",
 			entrypoint: "request_random",
@@ -54,9 +71,15 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const vrf_provider_mock_requestRandom = async (caller: string, source: CairoCustomEnum) => {
+	const vrf_provider_mock_requestRandom = async (
+		caller: string,
+		source: CairoCustomEnum,
+	) => {
 		try {
-			return await provider.call("wordle", build_vrf_provider_mock_requestRandom_calldata(caller, source));
+			return await provider.call(
+				"wordle",
+				build_vrf_provider_mock_requestRandom_calldata(caller, source),
+			);
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -84,8 +107,6 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-
-
 	return {
 		actions: {
 			attempt: actions_attempt,
@@ -95,9 +116,11 @@ export function setupWorld(provider: DojoProvider) {
 		},
 		vrf_provider_mock: {
 			consumeRandom: vrf_provider_mock_consumeRandom,
-			buildConsumeRandomCalldata: build_vrf_provider_mock_consumeRandom_calldata,
+			buildConsumeRandomCalldata:
+				build_vrf_provider_mock_consumeRandom_calldata,
 			requestRandom: vrf_provider_mock_requestRandom,
-			buildRequestRandomCalldata: build_vrf_provider_mock_requestRandom_calldata,
+			buildRequestRandomCalldata:
+				build_vrf_provider_mock_requestRandom_calldata,
 		},
 	};
 }
