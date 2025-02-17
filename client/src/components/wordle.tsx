@@ -1,4 +1,6 @@
+import { useDojoSDK } from "@dojoengine/sdk/react";
 import { useEffect, useRef, useState } from "react";
+import { SchemaType } from "../typescript/models.gen";
 
 export function Wordle() {
 	const [guesses, setGuesses] = useState<string[]>(Array(6).fill(""));
@@ -6,7 +8,7 @@ export function Wordle() {
 	const [currentRow, setCurrentRow] = useState(0);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const submitRef = useRef<HTMLButtonElement>(null);
-	const targetWord = "REACT";
+	const { sdk } = useDojoSDK();
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -70,7 +72,15 @@ export function Wordle() {
 										? currentGuess[colIndex]
 										: guess[colIndex];
 
-								return <Letter key={colIndex} letter={letter} currentRow={currentRow} colIndex={colIndex} rowIndex={rowIndex} />;
+								return (
+									<Letter
+										key={colIndex}
+										letter={letter}
+										currentRow={currentRow}
+										colIndex={colIndex}
+										rowIndex={rowIndex}
+									/>
+								);
 							})}
 					</div>
 				))}
@@ -79,8 +89,8 @@ export function Wordle() {
 	);
 }
 
-function Letter({ letter, currentRow,colIndex, rowIndex}) {
-    const targetWord = 'REACT';
+function Letter({ letter, currentRow, colIndex, rowIndex }) {
+	const targetWord = "REACT";
 	const getLetterColor = (letter: string, index: number, row: number) => {
 		if (!letter) return "bg-gray-200";
 		if (row >= currentRow) return "bg-gray-200";

@@ -8,6 +8,7 @@ import { init } from "@dojoengine/sdk";
 import { DojoSdkProvider } from "@dojoengine/sdk/react";
 import { setupWorld } from "./typescript/contracts.gen.ts";
 import { SchemaType } from "./typescript/models.gen.ts";
+import StarknetProvider from "./starknet-provider.tsx";
 
 async function main() {
 	const sdk = await init<SchemaType>({
@@ -27,9 +28,15 @@ async function main() {
 
 	createRoot(document.getElementById("root")!).render(
 		<StrictMode>
-			<DojoSdkProvider sdk={sdk} dojoConfig={dojoConfig} clientFn={setupWorld}>
-				<App />
-			</DojoSdkProvider>
+			<StarknetProvider>
+				<DojoSdkProvider
+					sdk={sdk}
+					dojoConfig={dojoConfig}
+					clientFn={setupWorld}
+				>
+					<App />
+				</DojoSdkProvider>
+			</StarknetProvider>
 		</StrictMode>,
 	);
 }
