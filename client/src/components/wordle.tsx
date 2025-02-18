@@ -1,27 +1,45 @@
-import { useDojoSDK } from "@dojoengine/sdk/react";
-import { useEffect, useRef, useState } from "react";
+import { useDojoSDK, useModel } from "@dojoengine/sdk/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSystemCalls } from "../hooks/useSystemCalls";
+import { useAccount } from "@starknet-react/core";
+import { getEntityIdFromKeys } from "@dojoengine/utils";
+import { ModelsMapping } from "../typescript/models.gen";
 
 export function Wordle() {
+	const inputRef = useRef<HTMLInputElement>(null);
+	const submitRef = useRef<HTMLButtonElement>(null);
+	const { address } = useAccount();
+
+	const entityId = useMemo(() => {
+		if (address) {
+			return getEntityIdFromKeys([BigInt(address)]);
+		}
+		return BigInt(0);
+	}, [address]);
+
+	const { attempt } = useSystemCalls(entityId);
+	const game = useModel(entityId, ModelsMapping.Game);
+
 	const [guesses, setGuesses] = useState<string[]>(Array(6).fill(""));
 	const [currentGuess, setCurrentGuess] = useState("");
 	const [currentRow, setCurrentRow] = useState(0);
-	const inputRef = useRef<HTMLInputElement>(null);
-	const submitRef = useRef<HTMLButtonElement>(null);
-	const { sdk } = useDojoSDK();
+	console.log(game);
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (currentGuess.length !== 5) return;
 		if (currentRow >= 6) return;
 
+		await attempt(currentGuess);
 		setGuesses((prev) => {
 			const newGuesses = [...prev];
-			newGuesses[currentRow] = currentGuess.toUpperCase();
+			newGuesses[currentRow] = currentGuess;
 			return newGuesses;
 		});
 		setCurrentRow((prev) => prev + 1);
 		setCurrentGuess("");
 	};
+
 	useEffect(() => {
 		if (inputRef.current) {
 			inputRef.current.focus();
@@ -108,7 +126,7 @@ function Letter({ letter, currentRow, colIndex, rowIndex }) {
 			className={`w-14 h-14 border-2 flex items-center justify-center font-bold text-xl
                             ${getLetterColor(letter, colIndex, rowIndex)}`}
 		>
-			{letter}
+			{letter && letter.toUpperCase()}
 		</div>
 	);
 }

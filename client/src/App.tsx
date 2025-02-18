@@ -45,6 +45,7 @@ function App() {
 					}
 				},
 			});
+			state.setEntities(game);
 			setSub(subscription);
 			if (
 				game.length === 0 &&

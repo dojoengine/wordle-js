@@ -1,8 +1,7 @@
-import { ToriiQueryBuilder } from "@dojoengine/sdk";
 import { useDojoSDK } from "@dojoengine/sdk/react";
 import { useAccount } from "@starknet-react/core";
 import { useCallback } from "react";
-import { BigNumberish } from "starknet";
+import { BigNumberish, shortString } from "starknet";
 import { v4 as uuidv4 } from "uuid";
 
 function createDefaultGame() {
@@ -50,5 +49,48 @@ export function useSystemCalls(entityId: BigNumberish) {
 		[account, state, entityId, client],
 	);
 
-	return { start };
+	const attempt = useCallback(
+		async (word: string) => {
+			const txId = uuidv4();
+			const attempt = { word, hint: 0 };
+			const entity = {
+				...state.getEntity(entityId.toString()),
+				models: {
+					wordle: {
+						Game: {
+							attempts: [{ word, hint: 0 }],
+						},
+					},
+				},
+			};
+
+			state.applyOptimisticUpdate(txId, (draft) => {
+				if (draft.entities[entityId.toString()]) {
+					draft.entities[
+						entityId.toString()
+					]?.models?.wordle?.Game?.attempts.push(attempt);
+				}
+			});
+			try {
+				await client.actions.attempt(
+					account!,
+					shortString.encodeShortString(word),
+				);
+				await state.waitForEntityChange(entityId.toString(), (newEntity) => {
+					return (
+						newEntity?.models?.wordle?.Game?.attempts.length ===
+						entity.models.wordle.Game.attempts.length
+					);
+				});
+			} catch (err) {
+				state.revertOptimisticUpdate(txId);
+				console.error("failed to verify attempt", err);
+			} finally {
+				state.confirmTransaction(txId);
+			}
+		},
+		[state],
+	);
+
+	return { start, attempt };
 }

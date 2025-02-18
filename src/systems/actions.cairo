@@ -47,7 +47,7 @@ pub mod actions {
         fn wordlib_dispatcher(
             self: @ContractState, world: @WorldStorage,
         ) -> WordSelectorLibraryDispatcher {
-            let (_, class_hash) = world.dns(@"word_v0_1_0").expect('wordlib not found');
+            let (_, class_hash) = world.dns(@"word_v0_0_1").expect('wordlib not found');
 
             WordSelectorLibraryDispatcher { class_hash }
         }
@@ -135,7 +135,7 @@ mod tests {
                 TestResource::Model(m_Game::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(vrf_provider_mock::TEST_CLASS_HASH),
-                TestResource::Library((word::TEST_CLASS_HASH, @"word", @"0_1_0")),
+                TestResource::Library((word::TEST_CLASS_HASH, @"word", @"0_0_1")),
             ]
                 .span(),
         };
