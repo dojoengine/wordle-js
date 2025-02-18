@@ -77,12 +77,13 @@ pub mod actions {
                 config.word = index;
 
                 world.write_model(@config);
-                return;
             }
+            println!("{:?}", config);
             let mut game: Game = world.read_model(player);
-            if game.player.into() == 0 {
-                game.player = player;
+            if game.attempts.len() == 0 {
+                world.write_model(@game);
             }
+            println!("{:?}", game);
         }
 
         fn attempt(ref self: ContractState, word: felt252) {

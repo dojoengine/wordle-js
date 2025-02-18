@@ -1,6 +1,5 @@
 import { useDojoSDK } from "@dojoengine/sdk/react";
 import { useEffect, useRef, useState } from "react";
-import { SchemaType } from "../typescript/models.gen";
 
 export function Wordle() {
 	const [guesses, setGuesses] = useState<string[]>(Array(6).fill(""));
