@@ -9,6 +9,7 @@ import { addAddressPadding } from "starknet";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { useSystemCalls } from "./hooks/useSystemCalls";
 import type { Subscription } from "@dojoengine/torii-client";
+import { parseModels } from "./lib/parseModels";
 
 function App() {
 	const { address } = useAccount();
@@ -38,14 +39,14 @@ function App() {
 					.includeHashedKeys(),
 				callback: ({ data, error }) => {
 					if (data) {
-						state.setEntities(data);
+						state.setEntities(parseModels(data));
 					}
 					if (error) {
 						console.error(error);
 					}
 				},
 			});
-			state.setEntities(game);
+			state.setEntities(parseModels(game));
 			setSub(subscription);
 			if (
 				game.length === 0 &&

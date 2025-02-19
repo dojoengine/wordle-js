@@ -27,4 +27,3 @@ pub struct Attempt {
     pub word: felt252,
     pub hint: u16,
 }
-

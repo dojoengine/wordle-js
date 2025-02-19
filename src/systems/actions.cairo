@@ -54,7 +54,21 @@ pub mod actions {
         fn vrf_provider(ref self: ContractState, world: @WorldStorage) -> IVrfProviderDispatcher {
             IVrfProviderDispatcher { contract_address: self.vrf_addr.read() }
         }
-    }
+        
+        fn assert_game_is_not_finished(self: @ContractState, game: @Game, word: felt252) -> bool {
+            let mut i: usize = 0;
+            loop {
+                if i >= game.attempts.len() {
+                    break true;
+                }
+                
+                if game.attempts[i].word == @word {
+                    break false;
+                }
+                
+                i += 1;
+            }
+        }
 
 
     #[abi(embed_v0)]
@@ -91,11 +105,12 @@ pub mod actions {
             let mut game: Game = world.read_model(get_caller_address());
             let mut config: Config = world.read_model(CONFIG_ID);
             let random_word = self.wordlib_dispatcher(@world).get_word(config.word);
-
+            
             assert(
                 wordle::ascii_to_string(word).len() == WORD_CHAR_COUNT,
                 'word must be 5 char length',
             );
+            assert(self.assert_game_is_not_finished(@game, random_word), 'game is finished');
             assert(
                 game.attempts.len().try_into().unwrap() < MAX_ATTEMPTS, 'too many attempts today',
             );

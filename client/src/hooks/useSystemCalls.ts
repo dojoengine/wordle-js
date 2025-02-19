@@ -53,12 +53,16 @@ export function useSystemCalls(entityId: BigNumberish) {
 		async (word: string) => {
 			const txId = uuidv4();
 			const attempt = { word, hint: 0 };
+			const e = state.getEntity(entityId.toString());
 			const entity = {
-				...state.getEntity(entityId.toString()),
+				...e,
 				models: {
 					wordle: {
 						Game: {
-							attempts: [{ word, hint: 0 }],
+							attempts: [
+								...(e?.models?.wordle?.Game?.attempts || []),
+								{ word: word.toLowerCase(), hint: 0 },
+							],
 						},
 					},
 				},
@@ -74,7 +78,7 @@ export function useSystemCalls(entityId: BigNumberish) {
 			try {
 				await client.actions.attempt(
 					account!,
-					shortString.encodeShortString(word),
+					shortString.encodeShortString(word.toLowerCase()),
 				);
 				await state.waitForEntityChange(entityId.toString(), (newEntity) => {
 					return (
