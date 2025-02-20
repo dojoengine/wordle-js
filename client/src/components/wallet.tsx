@@ -1,9 +1,4 @@
-import {
-	type Connector,
-	useAccount,
-	useConnect,
-	useDisconnect,
-} from "@starknet-react/core";
+import { type Connector, useConnect } from "@starknet-react/core";
 import { useCallback, useState } from "react";
 
 export function Wallet() {
