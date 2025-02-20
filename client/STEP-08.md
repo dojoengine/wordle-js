@@ -39,7 +39,7 @@ update `Scarb.toml` to add profile~
 deploy your world to slot
 ```bash
 sozo build --profile slot
-sozo migrate -p slot
+sozo migrate --profile slot
 ```
 
 once deployed, you can start a torii instance :
@@ -68,4 +68,16 @@ export const dojoConfig = createDojoConfig({
 
 #### Sepolia
 
+Just do the same as above, but instead of deploying a katana instance, you can use a RPC for sepolia e.g: https://api.cartridge.gg/x/starknet/sepolia
+
+To deploy your world : 
+
+```bash
+sozo build --profile sepolia
+sozo migrate --profile sepolia --slot.controller
+```
+Then deploy a torii instance using sepolia rpc.
+
 #### Mainnet
+
+⚠️ Deploying to mainnet involves actual cost. If you deploy there, you know what you are doing.
