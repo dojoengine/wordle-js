@@ -69,6 +69,7 @@ pub mod actions {
                 i += 1;
             }
         }
+    }
 
 
     #[abi(embed_v0)]
@@ -85,19 +86,22 @@ pub mod actions {
             let current_time = get_block_timestamp();
 
             let mut config: Config = world.read_model(CONFIG_ID);
+            let mut game: Game = world.read_model(player);
 
             if config.expires_at == 0 || current_time > config.expires_at {
                 config.expires_at = wordle::get_next_day(current_time);
                 config.word = index;
 
                 world.write_model(@config);
+
+                // player has game but need to start again we reset his attempts
+                game.attempts = array![];
             }
-            println!("{:?}", config);
-            let mut game: Game = world.read_model(player);
+
+            // config has already been created for current day
             if game.attempts.len() == 0 {
                 world.write_model(@game);
             }
-            println!("{:?}", game);
         }
 
         fn attempt(ref self: ContractState, word: felt252) {

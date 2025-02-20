@@ -1,8 +1,8 @@
-import { useAccount } from "@starknet-react/core";
+import { useAccount, useDisconnect } from "@starknet-react/core";
 import { Wordle } from "./components/wordle";
 import { Wallet } from "./components/wallet";
 import { useEffect, useMemo, useState } from "react";
-import { useDojoSDK } from "@dojoengine/sdk/react";
+import { useDojoSDK, useModel } from "@dojoengine/sdk/react";
 import { KeysClause, ToriiQueryBuilder } from "@dojoengine/sdk";
 import { ModelsMapping } from "./typescript/models.gen";
 import { addAddressPadding } from "starknet";
@@ -10,9 +10,11 @@ import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { useSystemCalls } from "./hooks/useSystemCalls";
 import type { Subscription } from "@dojoengine/torii-client";
 import { parseModels } from "./lib/parseModels";
+import { shortAddress } from "./lib/utils";
 
 function App() {
 	const { address } = useAccount();
+	const { disconnect } = useDisconnect();
 	const { sdk, useDojoStore } = useDojoSDK();
 	const state = useDojoStore((s) => s);
 	const [sub, setSub] = useState<Subscription | null>(null);
@@ -23,6 +25,18 @@ function App() {
 		return BigInt(0);
 	}, [address]);
 	const { start } = useSystemCalls(entityId);
+	const configId = getEntityIdFromKeys([BigInt(9898998)]);
+	const config = useModel(configId, ModelsMapping.Config);
+
+	useEffect(() => {
+		if (config && address) {
+			const now = new Date();
+			const expiresAt = new Date(config.expires_at * 1000);
+			if (now > expiresAt) {
+				start(address);
+			}
+		}
+	}, [config, address]);
 
 	useEffect(() => {
 		async function checkGame(addr: string) {
@@ -35,7 +49,6 @@ function App() {
 							"FixedLen",
 						).build(),
 					)
-					.withEntityModels([ModelsMapping.Game])
 					.includeHashedKeys(),
 				callback: ({ data, error }) => {
 					if (data) {
@@ -70,7 +83,9 @@ function App() {
 	return (
 		<>
 			<div>
-				<h1>{address}</h1>
+				<h1 className="cursor-pointer" onClick={() => disconnect()}>
+					{shortAddress(address)}
+				</h1>
 			</div>
 			<Wordle />
 		</>

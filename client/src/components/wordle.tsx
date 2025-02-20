@@ -1,11 +1,10 @@
-import { useModel } from "@dojoengine/sdk/react";
+import { useDojoSDK, useModel } from "@dojoengine/sdk/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSystemCalls } from "../hooks/useSystemCalls";
 import { useAccount } from "@starknet-react/core";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { type Attempt, ModelsMapping } from "../typescript/models.gen";
-
-const TARGET_HINT = [2, 2, 2, 2, 2];
+import { gameIsFinished } from "../lib/utils";
 
 export function Wordle() {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -21,18 +20,7 @@ export function Wordle() {
 
 	const { attempt } = useSystemCalls(entityId);
 	const game = useModel(entityId, ModelsMapping.Game);
-	const gameIsFinished = game?.attempts.reduce(
-		(acc: boolean, curr: Attempt) => {
-			return (
-				acc ||
-				curr.hint.every(
-					(value: number, index: number) => value === TARGET_HINT[index],
-				)
-			);
-		},
-		false,
-	);
-	console.log(gameIsFinished);
+	const isFinished = gameIsFinished(game);
 
 	const [guesses, setGuesses] = useState<Attempt[]>(
 		Array(6).fill({ word: "", hint: 0 }),
@@ -86,14 +74,14 @@ export function Wordle() {
 					value={currentGuess}
 					onChange={handleChange}
 					maxLength={5}
-					className="border-2 p-2 mr-2"
+					className="border-2 p-2 mr-2 display-none"
 					placeholder="Enter 5-letter word"
-					disabled={currentRow >= 6}
+					disabled={currentRow >= 6 || isFinished}
 				/>
 				<button
 					ref={submitRef}
 					type="submit"
-					disabled={currentGuess.length !== 5 || currentRow >= 6}
+					disabled={currentGuess.length !== 5 || currentRow >= 6 || isFinished}
 					className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
 				>
 					Guess
@@ -146,7 +134,7 @@ function Letter({
 
 	return (
 		<div
-			className={`w-14 h-14 border-2 flex items-center justify-center font-bold text-xl
+			className={`w-14 h-14 border-2 flex items-center justify-center font-bold text-xl text-black
                             ${getLetterColor(hint)}`}
 		>
 			{letter && letter.toUpperCase()}

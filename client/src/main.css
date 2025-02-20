@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+	--bg-color: #1a1a1a;
+	--font-color: #d4d4d4;
+}
+
 body {
 	height: 100vh;
+	background-color: var(--bg-color); /* Dark background */
+	color: var(--font-color); /* Light grey text */
+	font-family: "Consolas", "Monaco", "Courier New", monospace; /* Coding-style font */
 }
 
 #root {
 	height: 100%;
+	background-color: var(--bg-color); /* Ensure root element matches body */
 }

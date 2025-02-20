@@ -9,7 +9,7 @@ edition = "2024_07"
 sierra-replace-ids = true
 
 [dependencies]
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.0" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
 #cartridge_vrf = { git = "https://github.com/cartridge-gg/vrf" }
 #openzeppelin = "0.20.0"
 
@@ -19,4 +19,4 @@ allowed-libfuncs-list.name = "experimental"
 
 [dev-dependencies]
 cairo_test = "=2.9.2"
-dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.0" }
+dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
