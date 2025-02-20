@@ -1,11 +1,16 @@
-import { useEffect, useState, type PropsWithChildren } from "react";
-import { mainnet } from "@starknet-react/chains";
-import { jsonRpcProvider, StarknetConfig, voyager } from "@starknet-react/core";
-import { dojoConfig } from "../dojoConfig";
-import {
-	predeployedAccounts,
-	type PredeployedAccountsConnector,
-} from "@dojoengine/predeployed-connector";
+# STEP 07
+
+## Prepare game for release
+
+- add wallet connector for real use (we'll install cartridge/controller here)
+
+```bash
+pnpm add @cartridge/connector @cartridge/controller
+```
+
+update `src/starknet-provider.tsx` accordingly
+```ts
+
 import { ControllerConnector } from "@cartridge/connector";
 import { constants } from "starknet";
 import type { SessionPolicies } from "@cartridge/controller";
@@ -27,7 +32,7 @@ const policies: SessionPolicies = {
 					description: "Submit an attempt on finding secret word",
 					entrypoint: "attempt",
 				},
-			],
+			],			
 		},
 	},
 };
@@ -45,32 +50,15 @@ const controller = new ControllerConnector({
 });
 
 export default function StarknetProvider({ children }: PropsWithChildren) {
-	const [connectors, setConnectors] = useState<PredeployedAccountsConnector[]>(
-		[],
-	);
-	const provider = jsonRpcProvider({
-		rpc: () => ({ nodeUrl: dojoConfig.rpcUrl as string }),
-	});
-
-	useEffect(() => {
-		if (connectors.length === 0) {
-			predeployedAccounts({
-				rpc: dojoConfig.rpcUrl as string,
-				id: "katana",
-				name: "Katana",
-			}).then(setConnectors);
-		}
-	}, [connectors]);
-
 	return (
 		<StarknetConfig
-			chains={[mainnet]}
-			provider={provider}
+            // Update this line to add controller to connectors list
 			connectors={[...connectors, controller]}
-			explorer={voyager}
-			autoConnect
 		>
 			{children}
 		</StarknetConfig>
 	);
 }
+```
+
+Once this is set up, hit http://localhost:5173, you should see controller appearing in controller list

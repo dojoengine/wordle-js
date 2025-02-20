@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@cartridge/connector':
+        specifier: ^0.6.0
+        version: 0.6.0(@starknet-react/core@3.7.2(get-starknet-core@4.0.0)(react@19.0.0)(starknet@6.23.1)(typescript@5.7.3))(starknet@6.23.1)
       '@cartridge/controller':
         specifier: ^0.6.0
         version: 0.6.0(starknet@6.23.1)
@@ -197,6 +200,11 @@ packages:
 
   '@cartridge/account-wasm@0.6.0':
     resolution: {integrity: sha512-ruI1L+GVDRsS8jJ6GNpcODFd1JaQV2j6BAHYJqx1iO0LGaC9/gCIHM+mDk/IKgHTjX/57+epkfcCBOhL8Eit1Q==}
+
+  '@cartridge/connector@0.6.0':
+    resolution: {integrity: sha512-WwaJCSNevXRwzc/BWg5MB3Y5qhVbv3l5n8+Ph7yPAGsOIVM6cN/Wm7nJyhGuDH0J0V2h/2qVkRetV82p0L3LEw==}
+    peerDependencies:
+      '@starknet-react/core': ^3.7
 
   '@cartridge/controller@0.6.0':
     resolution: {integrity: sha512-s8yUzVCgLmkdjFFzq0xRe5PO5AGtp+znUoZQ9KtGDA98EdzVf9mmzKBngzQAbEljBXV6+w+qdZ5eE6sM2ulngw==}
@@ -2053,6 +2061,13 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.9
 
   '@cartridge/account-wasm@0.6.0': {}
+
+  '@cartridge/connector@0.6.0(@starknet-react/core@3.7.2(get-starknet-core@4.0.0)(react@19.0.0)(starknet@6.23.1)(typescript@5.7.3))(starknet@6.23.1)':
+    dependencies:
+      '@cartridge/controller': 0.6.0(starknet@6.23.1)
+      '@starknet-react/core': 3.7.2(get-starknet-core@4.0.0)(react@19.0.0)(starknet@6.23.1)(typescript@5.7.3)
+    transitivePeerDependencies:
+      - starknet
 
   '@cartridge/controller@0.6.0(starknet@6.23.1)':
     dependencies:
