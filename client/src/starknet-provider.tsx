@@ -7,13 +7,13 @@ import {
 	type PredeployedAccountsConnector,
 } from "@dojoengine/predeployed-connector";
 import { ControllerConnector } from "@cartridge/connector";
-import { constants } from "starknet";
-import type { SessionPolicies } from "@cartridge/controller";
+import { shortString, ChainId } from "starknet";
+import { type SessionPolicies } from "@cartridge/controller";
 import { getContractByName } from "@dojoengine/core";
 
 const policies: SessionPolicies = {
 	contracts: {
-		[getContractByName(dojoConfig.manifest, "wordle", "actions")]: {
+		[getContractByName(dojoConfig.manifest, "wordle", "actions").address]: {
 			name: "Actions",
 			description: "Actions to operate on wordle system",
 			methods: [
@@ -34,13 +34,16 @@ const policies: SessionPolicies = {
 const controller = new ControllerConnector({
 	chains: [
 		{
+			rpcUrl: "http://localhost:5050",
+		},
+		{
 			rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
 		},
 		{
 			rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
 		},
 	],
-	defaultChainId: constants.StarknetChainId.SN_SEPOLIA,
+	defaultChainId: shortString.encodeShortString("KATANA") as ChainId,
 	policies,
 });
 
